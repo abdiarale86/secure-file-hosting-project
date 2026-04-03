@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Downloads - Secure File Hosting</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Secure File Hosting</h1>
+    <nav>
+      <a href="/upload">Upload</a>
+      <a href="/downloads">Downloads</a>
+      <a href="/my-files">My Files</a>
+      <button onclick="logout()">Logout</button>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>Downloads</h2>
+    <p class="small-text">This page shows all uploaded files from all logged-in users.</p>
+
+    <div id="messageBox" class="message"></div>
+
+    <table id="filesTable">
+      <thead>
+        <tr>
+          <th>Filename</th>
+          <th>Size (KB)</th>
+          <th>Uploaded At</th>
+          <th>Owner</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="filesTableBody">
+        <tr>
+          <td colspan="5" class="center-text">Loading files...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>Beginner-friendly project for COSC2956</footer>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    requireLogin();
+    loadFiles();
+
+    async function loadFiles() {
+      const response = await fetch("/api/public-files", {
+        headers: authHeader()
+      });
+
+      const data = await response.json();
+      const tableBody = document.getElementById("filesTableBody");
+
+      if (!response.ok) {
+        tableBody.innerHTML = '<tr><td colspan="5" class="center-text">Could not load files.</td></tr>';
+        showMessage("messageBox", data.message, "error");
+        return;
+      }
+
+      if (data.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5" class="center-text">No files uploaded yet.</td></tr>';
+        return;
+      }
+
+      tableBody.innerHTML = "";
+
+      data.forEach(file => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${file.original_filename}</td>
+          <td>${(file.size / 1024).toFixed(2)}</td>
+          <td>${new Date(file.uploaded_at).toLocaleString()}</td>
+          <td>${file.owner_username} (${file.owner_email})</td>
+          <td>
+            <button class="action-btn" onclick="downloadFile('${file._id}')">Download</button>
+          </td>
+        `;
+
+        tableBody.appendChild(row);
+      });
+    }
+
+    async function downloadFile(fileId) {
+      const response = await fetch(`/api/files/${fileId}/download`, {
+        headers: authHeader()
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        alert(data.message);
+        return;
+      }
+
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const tempLink = document.createElement("a");
+      tempLink.href = downloadUrl;
+
+      const contentDisposition = response.headers.get("Content-Disposition");
+      let fileName = "downloaded-file";
+      if (contentDisposition && contentDisposition.includes("filename=")) {
+        fileName = contentDisposition.split("filename=")[1].replace(/"/g, "");
+      }
+
+      tempLink.download = fileName;
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      tempLink.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+    }
+  </script>
+</body>
+</html>

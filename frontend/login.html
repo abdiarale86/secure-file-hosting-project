@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Secure File Hosting</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Secure File Hosting</h1>
+    <nav>
+      <a href="/register">Register</a>
+      <a href="/login">Login</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>Login</h2>
+    <p class="small-text">Login to upload files, see downloads, and manage your files.</p>
+
+    <label for="email">Email</label>
+    <input type="email" id="email" placeholder="Enter email">
+
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="Enter password">
+
+    <button class="primary" onclick="loginUser()">Login</button>
+
+    <div id="messageBox" class="message"></div>
+
+    <p class="small-text">Do not have an account? <a href="/register">Go to Register</a></p>
+  </div>
+
+  <footer>Beginner-friendly project for COSC2956</footer>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    async function loginUser() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!email || !password) {
+        showMessage("messageBox", "Please enter email and password.", "error");
+        return;
+      }
+
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        saveToken(data.token);
+        saveUser(data.user);
+        showMessage("messageBox", data.message, "success");
+
+        setTimeout(() => {
+          window.location.href = "/upload";
+        }, 1000);
+      } else {
+        showMessage("messageBox", data.message, "error");
+      }
+    }
+  </script>
+</body>
+</html>

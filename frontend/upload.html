@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload - Secure File Hosting</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Secure File Hosting</h1>
+    <nav>
+      <a href="/upload">Upload</a>
+      <a href="/downloads">Downloads</a>
+      <a href="/my-files">My Files</a>
+      <button onclick="logout()">Logout</button>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>Upload File</h2>
+    <p class="small-text">Allowed file types: .pdf and .mp4 only. Maximum size: 20 MB.</p>
+
+    <label for="fileInput">Choose a file</label>
+    <input type="file" id="fileInput" accept=".pdf,.mp4">
+
+    <button class="primary" onclick="uploadFile()">Upload File</button>
+
+    <div id="messageBox" class="message"></div>
+  </div>
+
+  <footer>Beginner-friendly project for COSC2956</footer>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    requireLogin();
+
+    async function uploadFile() {
+      const fileInput = document.getElementById("fileInput");
+      const file = fileInput.files[0];
+
+      if (!file) {
+        showMessage("messageBox", "Please choose a file first.", "error");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        headers: authHeader(),
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        showMessage("messageBox", data.message, "success");
+        fileInput.value = "";
+      } else {
+        showMessage("messageBox", data.message, "error");
+      }
+    }
+  </script>
+</body>
+</html>
