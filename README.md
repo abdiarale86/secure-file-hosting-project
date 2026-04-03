@@ -92,10 +92,12 @@ http://localhost:3000
 ---
 
 ##  What I Learned
-- Backend/frontend communication
-- JWT authentication
-- File handling
-- MongoDB usage
+Through this project, I learned:
+- How frontend and backend communicate using APIs
+- How authentication works using JWT
+- How to securely store passwords
+- How to upload and manage files on a server
+- How to use MongoDB to store data
 
 ---
 
