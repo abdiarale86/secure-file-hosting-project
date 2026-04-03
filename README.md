@@ -1,6 +1,6 @@
 # Secure File Hosting Web Application
 
-## 📌 Project Overview
+##  Project Overview
 In this project, I built a secure full-stack web application that allows users to:
 - Register and log in
 - Upload files
@@ -11,7 +11,7 @@ The application follows a frontend → backend → database structure. The front
 
 ---
 
-## 🛠️ Technologies Used
+##  Technologies Used
 - Node.js
 - Express.js
 - MongoDB (Mongoose)
@@ -22,7 +22,7 @@ The application follows a frontend → backend → database structure. The front
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 secure-file-hosting-project/
 
 backend/
@@ -45,7 +45,7 @@ README.md
 
 ---
 
-## ⚙️ How to Run the Project (Step-by-Step)
+##  How to Run the Project (Step-by-Step)
 
 1. Open the project folder in VS Code
 
@@ -68,7 +68,7 @@ http://localhost:3000
 
 ---
 
-## 🔐 Features
+##  Features
 - User registration & login
 - JWT authentication
 - File upload (.pdf, .mp4, max 20MB)
@@ -78,7 +78,7 @@ http://localhost:3000
 
 ---
 
-## 🎥 Demo Steps
+##  Demo Steps
 1. Register user
 2. Login
 3. Upload file
@@ -91,7 +91,7 @@ http://localhost:3000
 
 ---
 
-## 🧠 What I Learned
+##  What I Learned
 - Backend/frontend communication
 - JWT authentication
 - File handling
@@ -99,5 +99,5 @@ http://localhost:3000
 
 ---
 
-## ✅ Conclusion
+##  Conclusion
 This is a beginner-friendly full-stack project demonstrating authentication, file handling, and database integration.
